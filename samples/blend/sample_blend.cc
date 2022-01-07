@@ -53,17 +53,63 @@ OZZ_OPTIONS_DECLARE_STRING(skeleton,
 // First animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(animation1,
                            "Path to the first animation (ozz archive format).",
-                           "media/animation1.ozz", false)
+                           "media/walking_base.ozz", false)
 
 // Second animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(animation2,
                            "Path to the second animation (ozz archive format).",
-                           "media/animation2.ozz", false)
+                           "media/sword_topdown_slash.ozz", false)
 
 // Third animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(animation3,
                            "Path to the second animation (ozz archive format).",
-                           "media/animation3.ozz", false)
+                           "media/walking_backwards.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation4,
+"Path to the second animation (ozz archive format).",
+"media/jump/charge_idle.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation5,
+"Path to the second animation (ozz archive format).",
+"media/jump/charge_jump_backward.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation6,
+"Path to the second animation (ozz archive format).",
+"media/jump/charge_jump_forward.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation7,
+"Path to the second animation (ozz archive format).",
+"media/jump/charge_jump_forward_idle.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation8,
+"Path to the second animation (ozz archive format).",
+"media/jump/charge_jump.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation9,
+"Path to the second animation (ozz archive format).",
+"media/jump/falling_idle.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation10,
+"Path to the second animation (ozz archive format).",
+"media/jump/landing.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation11,
+"Path to the second animation (ozz archive format).",
+"media/jump/stand_charge.ozz", false)
+
+
+OZZ_OPTIONS_DECLARE_STRING(animation12,
+"Path to the second animation (ozz archive format).",
+"media/Scene.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation13,
+"Path to the second animation (ozz archive format).",
+"media/idle.ozz", false)
+
+OZZ_OPTIONS_DECLARE_STRING(animation14,
+"Path to the second animation (ozz archive format).",
+"media/walking_backwards.ozz", false)
+
 
 class BlendSampleApplication : public ozz::sample::Application {
  public:
@@ -203,8 +249,7 @@ class BlendSampleApplication : public ozz::sample::Application {
     const int num_soa_joints = skeleton_.num_soa_joints();
 
     // Reading animations.
-    const char* filenames[] = {OPTIONS_animation1, OPTIONS_animation2,
-                               OPTIONS_animation3};
+    const char* filenames[] = {OPTIONS_animation12, OPTIONS_animation13, OPTIONS_animation14};
     static_assert(OZZ_ARRAY_SIZE(filenames) == kNumLayers, "Arrays mistmatch.");
     for (int i = 0; i < kNumLayers; ++i) {
       Sampler& sampler = samplers_[i];

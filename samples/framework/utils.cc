@@ -286,6 +286,7 @@ void MultiplySoATransformQuaternion(
 }
 
 bool LoadSkeleton(const char* _filename, ozz::animation::Skeleton* _skeleton) {
+  std::cout << "LOADING SKELLY";
   assert(_filename && _skeleton);
   ozz::log::Out() << "Loading skeleton archive " << _filename << "."
                   << std::endl;

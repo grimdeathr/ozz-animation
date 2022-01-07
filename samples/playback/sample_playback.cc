@@ -38,6 +38,7 @@
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/maths/vec_float.h"
 #include "ozz/options/options.h"
+#include <string>
 
 // Skeleton archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(skeleton,
@@ -47,7 +48,7 @@ OZZ_OPTIONS_DECLARE_STRING(skeleton,
 // Animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(animation,
                            "Path to the animation (ozz archive format).",
-                           "media/animation.ozz", false)
+                           "media/running_backwards.ozz", false)
 
 class PlaybackSampleApplication : public ozz::sample::Application {
  public:
@@ -56,6 +57,7 @@ class PlaybackSampleApplication : public ozz::sample::Application {
  protected:
   // Updates current animation time and skeleton pose.
   virtual bool OnUpdate(float _dt, float) {
+    std::cout << "update" << std::endl;
     // Updates current animation time.
     controller_.Update(animation_, _dt);
 
@@ -155,7 +157,24 @@ class PlaybackSampleApplication : public ozz::sample::Application {
 };
 
 int main(int _argc, const char** _argv) {
+
+  std::cout << "init files" << std::endl;
   const char* title =
       "Ozz-animation sample: Binary animation/skeleton playback";
   return PlaybackSampleApplication().Run(_argc, _argv, "1.0", title);
 }
+
+  void setSkelly(const char* path) {
+  // Animation archive can be specified as an option.
+  OZZ_OPTIONS_DECLARE_STRING(animation,
+                            "Path to the animation (ozz archive format).",
+                            path, false);
+
+  }
+
+  void setAnnie(const char* path) {
+      OZZ_OPTIONS_DECLARE_STRING(skeleton,
+                            "Path to the skeleton (ozz archive format).",
+                            path, false);
+
+  }

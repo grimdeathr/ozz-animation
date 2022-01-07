@@ -43,8 +43,6 @@
 #include "ozz/options/options.h"
 
 #include "framework/application.h"
-#include "framework/imgui.h"
-#include "framework/renderer.h"
 #include "framework/utils.h"
 
 #include <cstring>
@@ -58,13 +56,13 @@ OZZ_OPTIONS_DECLARE_STRING(skeleton,
 OZZ_OPTIONS_DECLARE_STRING(
     lower_body_animation,
     "Path to the lower body animation(ozz archive format).",
-    "media/animation_base.ozz", false)
+    "media/running_backwards.ozz", false)
 
 // Upper body animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(
     upper_body_animation,
     "Path to the upper body animation (ozz archive format).",
-    "media/animation_partial.ozz", false)
+    "media/Scene.ozz", false)
 
 class PartialBlendSampleApplication : public ozz::sample::Application {
  public:
@@ -75,6 +73,7 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
  protected:
   // Updates current animation time and skeleton pose.
   virtual bool OnUpdate(float _dt, float) {
+    std::cout << "what the fuck";
     // Updates and samples both animations to their respective local space
     // transform buffers.
     for (int i = 0; i < kNumLayers; ++i) {
@@ -140,13 +139,8 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
     return true;
   }
 
-  // Samples animation, transforms to model space and renders.
-  virtual bool OnDisplay(ozz::sample::Renderer* _renderer) {
-    return _renderer->DrawPosture(skeleton_, make_span(models_),
-                                  ozz::math::Float4x4::identity());
-  }
-
   virtual bool OnInitialize() {
+       std::cout << "init skelly" << std::endl;
     // Reading skeleton.
     if (!ozz::sample::LoadSkeleton(OPTIONS_skeleton, &skeleton_)) {
       return false;
@@ -157,6 +151,7 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
     // Reading animations.
     const char* filenames[] = {OPTIONS_lower_body_animation,
                                OPTIONS_upper_body_animation};
+    std::cout << "init files" << std::endl;
     for (int i = 0; i < kNumLayers; ++i) {
       Sampler& sampler = samplers_[i];
 
@@ -198,7 +193,7 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
       }
     }
     SetupPerJointWeights();
-
+    std::cout << "init complete" << std::endl;
     return true;
   }
 
@@ -245,97 +240,6 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
   }
 
   virtual void OnDestroy() {}
-
-  virtual bool OnGui(ozz::sample::ImGui* _im_gui) {
-    // Exposes blending parameters.
-    {
-      static bool open = true;
-      ozz::sample::ImGui::OpenClose oc(_im_gui, "Blending parameters", &open);
-      if (open) {
-        char label[64];
-
-        static bool automatic = true;
-        _im_gui->DoCheckBox("Use automatic blending settings", &automatic);
-
-        static float coeff = 1.f;  // All power to the partial animation.
-        std::sprintf(label, "Upper body weight: %.2f", coeff);
-        _im_gui->DoSlider(label, 0.f, 1.f, &coeff, 1.f, automatic);
-
-        Sampler& lower_body_sampler = samplers_[kLowerBody];
-        Sampler& upper_body_sampler = samplers_[kUpperBody];
-
-        if (automatic) {
-          // Blending values are forced when "automatic" mode is selected.
-          lower_body_sampler.weight_setting = 1.f;
-          lower_body_sampler.joint_weight_setting = 1.f - coeff;
-          upper_body_sampler.weight_setting = 1.f;
-          upper_body_sampler.joint_weight_setting = coeff;
-        }
-
-        _im_gui->DoLabel("Manual settings:");
-        _im_gui->DoLabel("Lower body layer:");
-        std::sprintf(label, "Layer weight: %.2f",
-                     lower_body_sampler.weight_setting);
-        _im_gui->DoSlider(label, 0.f, 1.f, &lower_body_sampler.weight_setting,
-                          1.f, !automatic);
-        std::sprintf(label, "Joints weight: %.2f",
-                     lower_body_sampler.joint_weight_setting);
-        _im_gui->DoSlider(label, 0.f, 1.f,
-                          &lower_body_sampler.joint_weight_setting, 1.f,
-                          !automatic);
-        _im_gui->DoLabel("Upper body layer:");
-        std::sprintf(label, "Layer weight: %.2f",
-                     upper_body_sampler.weight_setting);
-        _im_gui->DoSlider(label, 0.f, 1.f, &upper_body_sampler.weight_setting,
-                          1.f, !automatic);
-        std::sprintf(label, "Joints weight: %.2f",
-                     upper_body_sampler.joint_weight_setting);
-        _im_gui->DoSlider(label, 0.f, 1.f,
-                          &upper_body_sampler.joint_weight_setting, 1.f,
-                          !automatic);
-        _im_gui->DoLabel("Global settings:");
-        std::sprintf(label, "Threshold: %.2f", threshold_);
-        _im_gui->DoSlider(label, .01f, 1.f, &threshold_);
-
-        SetupPerJointWeights();
-      }
-    }
-    // Exposes selection of the root of the partial blending hierarchy.
-    {
-      static bool open = true;
-      ozz::sample::ImGui::OpenClose oc(_im_gui, "Root", &open);
-      if (open && skeleton_.num_joints() != 0) {
-        _im_gui->DoLabel("Root of the upper body hierarchy:",
-                         ozz::sample::ImGui::kLeft, false);
-        char label[64];
-        std::sprintf(label, "%s (%d)",
-                     skeleton_.joint_names()[upper_body_root_],
-                     upper_body_root_);
-        if (_im_gui->DoSlider(label, 0, skeleton_.num_joints() - 1,
-                              &upper_body_root_)) {
-          SetupPerJointWeights();
-        }
-      }
-    }
-    // Exposes animations runtime playback controls.
-    {
-      static bool oc_open = true;
-      ozz::sample::ImGui::OpenClose oc(_im_gui, "Animation control", &oc_open);
-      if (oc_open) {
-        static bool open[kNumLayers] = {true, true};
-        const char* oc_names[kNumLayers] = {"Lower body animation",
-                                            "Upper body animation"};
-        for (int i = 0; i < kNumLayers; ++i) {
-          Sampler& sampler = samplers_[i];
-          ozz::sample::ImGui::OpenClose loc(_im_gui, oc_names[i], nullptr);
-          if (open[i]) {
-            sampler.controller.OnGui(sampler.animation, _im_gui);
-          }
-        }
-      }
-    }
-    return true;
-  }
 
   virtual void GetSceneBounds(ozz::math::Box* _bound) const {
     ozz::sample::ComputePostureBounds(make_span(models_), _bound);
@@ -400,6 +304,7 @@ class PartialBlendSampleApplication : public ozz::sample::Application {
 };
 
 int main(int _argc, const char** _argv) {
+  std::cout << "what the fuck";
   const char* title = "Ozz-animation sample: Partial animations blending";
   return PartialBlendSampleApplication().Run(_argc, _argv, "1.0", title);
 }

@@ -21,12 +21,39 @@ option(ozz_build_simd_ref "Force SIMD math reference implementation" OFF)
 option(ozz_build_msvc_rt_dll "Select msvc DLL runtime library" ON)
 option(ozz_build_postfix "Use per config postfix name" ON)
 
+# add_definitions("-s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+# add_definitions("-s EXTRA_EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+# add_definitions("-s EXPORTED_FUNCTIONS='[\"setSkelly\"]'")
+# Here you can add -s flag during linking
+# Here you can add -s flag during compiling object files
+# add_definitions("-s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+# add_definitions("-s EXTRA_EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+# add_definitions("-s EXPORTED_FUNCTIONS='[\"_testInt\"]'")
+# Here you can add -s flag during linking
+# set_target_properties(web_mealy_compiler PROPERTIES LINK_FLAGS "-s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+# Set this if you want to to generate sample html file
+
+# set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+# SET(CMAKE_EXE_LINKER_FLAGS  "--emrun")
+# SET(CMAKE_EXE_LINKER_FLAGS  "-D CMAKE_BUILD_TYPE=Release")
+# set(CMAKE_CXX_FLAGS "-D CMAKE_BUILD_TYPE=Release");
+# SET(CMAKE_EXE_LINKER_FLAGS  "-s EXPORTED_FUNCTIONS='["setSkelly"]'")
+# SET(CMAKE_EXE_LINKER_FLAGS  "-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]'")
+
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \ 
+# -s EXPORTED_FUNCTIONS=\"['_main', '_setSkelly', '_setSkelly']\" \
+# -s EXPORTED_RUNTIME_METHODS=\"['ccall', 'cwrap']\" \
+# ")
+
 # Include ozz cmake parameters and scripts
 include(CheckCXXCompilerFlag)
 include(${PROJECT_SOURCE_DIR}/build-utils/cmake/compiler_settings.cmake)
 include(${PROJECT_SOURCE_DIR}/build-utils/cmake/package_settings.cmake)
 include(${PROJECT_SOURCE_DIR}/build-utils/cmake/fuse_target.cmake)
 include(${PROJECT_SOURCE_DIR}/build-utils/cmake/clang_format.cmake)
+
+
 
 # Add project execution options
 option(ozz_run_tests_headless "Run samples without rendering (used for unit tests)" ON)

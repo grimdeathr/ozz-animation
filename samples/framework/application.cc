@@ -205,7 +205,7 @@ int Application::Run(int _argc, const char** _argv, const char* _version,
         im_gui_ = make_unique<internal::ImGuiImpl>();
 
 #ifndef EMSCRIPTEN  // Better not rename web page.
-        glfwSetWindowTitle(_title);
+        // glfwSetWindowTitle(_title);
 #endif  // EMSCRIPTEN
 
         // Setup the window and installs callbacks.
@@ -252,7 +252,7 @@ bool KeyPressed() {
 
 Application::LoopStatus Application::OneLoop(int _loops) {
   Profiler profile(fps_.get());  // Profiles frame.
-
+  log::Out() << "Starting sample ";
   // Tests for a manual exit request.
   if (exit_ || glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) {
     return kBreak;
@@ -265,24 +265,24 @@ Application::LoopStatus Application::OneLoop(int _loops) {
 
 // Don't overload the cpu if the window is not active.
 #ifndef EMSCRIPTEN
-  if (OPTIONS_render && !glfwGetWindowParam(GLFW_ACTIVE)) {
-    glfwWaitEvents();  // Wait...
+  // if (OPTIONS_render && !glfwGetWindowParam(GLFW_ACTIVE)) {
+  //   glfwWaitEvents();  // Wait...
 
-    // Reset last update time in order to stop the time while the app isn't
-    // active.
-    last_idle_time_ = glfwGetTime();
+  //   // Reset last update time in order to stop the time while the app isn't
+  //   // active.
+  //   last_idle_time_ = glfwGetTime();
 
-    return kContinue;  // ...but don't do anything.
-  }
+  //   return kContinue;  // ...but don't do anything.
+  // }
 #else
-  int width, height;
-  if (emscripten_get_canvas_element_size(nullptr, &width, &height) !=
-      EMSCRIPTEN_RESULT_SUCCESS) {
-    return kBreakFailure;
-  }
-  if (width != resolution_.width || height != resolution_.height) {
-    ResizeCbk(width, height);
-  }
+  // int width, height;
+  // if (emscripten_get_canvas_element_size(nullptr, &width, &height) !=
+  //     EMSCRIPTEN_RESULT_SUCCESS) {
+  //   return kBreakFailure;
+  // }
+  // if (width != resolution_.width || height != resolution_.height) {
+  //   ResizeCbk(width, height);
+  // }
 #endif  // EMSCRIPTEN
 
   // Enable/disable help on F1 key.
@@ -339,6 +339,7 @@ bool Application::Loop() {
 }
 
 bool Application::Display() {
+  return true;
   assert(OPTIONS_render);
 
   bool success = true;
@@ -362,7 +363,7 @@ bool Application::Display() {
 
     // Forwards display event to the inheriting application.
     if (success) {
-      success = OnDisplay(renderer_.get());
+      // success = OnDisplay(renderer_.get());
     }
   }  // Ends profiling.
 
@@ -456,6 +457,7 @@ bool Application::Idle(bool _first_frame) {
 }
 
 bool Application::Gui() {
+  return true;
   bool success = true;
   const float kFormWidth = 200.f;
   const float kHelpMargin = 16.f;
@@ -509,7 +511,7 @@ bool Application::Gui() {
     ImGui::Form form(im_gui, "Sample", rect, &open, true);
     if (open) {
       // Forwards event to the inherited application.
-      success = OnGui(im_gui);
+      // success = OnGui(im_gui);
     }
   }
 
@@ -520,6 +522,7 @@ bool Application::Gui() {
 }
 
 bool Application::FrameworkGui() {
+  return true;
   // Downcast to public imgui.
   ImGui* im_gui = im_gui_.get();
   {  // Render statistics

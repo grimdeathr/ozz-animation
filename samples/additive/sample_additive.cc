@@ -52,17 +52,17 @@ OZZ_OPTIONS_DECLARE_STRING(skeleton,
 // MAin animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(animation,
                            "Path to the main animation(ozz archive format).",
-                           "media/animation_base.ozz", false)
+                           "media/walking_backwards.ozz", false)
 
 // Additive animation archive can be specified as an option.
 OZZ_OPTIONS_DECLARE_STRING(
     additive_animation, "Path to the additive animation (ozz archive format).",
-    "media/animation_additive.ozz", false)
+    "media/Scene.ozz", false)
 
 class AdditiveBlendSampleApplication : public ozz::sample::Application {
  public:
   AdditiveBlendSampleApplication()
-      : upper_body_root_(0),
+      : upper_body_root_(1),
         upper_body_mask_enable_(true),
         upper_body_joint_weight_setting_(1.f),
         threshold_(ozz::animation::BlendingJob().threshold) {}

@@ -101,13 +101,13 @@ class Application {
   // This function is called in between the OnDisplay and swap functions.
   // OnGui can return false which will in turn stop the loop and exit the
   // application with EXIT_FAILURE. Note that OnDestroy is called in any case.
-  virtual bool OnGui(ImGui* _im_gui) = 0;
+  // virtual bool OnGui(ImGui* _im_gui) = 0;
 
-  // Provides display event to the inheriting application.
-  // This function is called in between the clear and swap functions.
-  // OnDisplay can return false which will in turn stop the loop and exit the
-  // application with EXIT_FAILURE. Note that OnDestroy is called in any case.
-  virtual bool OnDisplay(Renderer* _renderer) = 0;
+  // // Provides display event to the inheriting application.
+  // // This function is called in between the clear and swap functions.
+  // // OnDisplay can return false which will in turn stop the loop and exit the
+  // // application with EXIT_FAILURE. Note that OnDestroy is called in any case.
+  // virtual bool OnDisplay(Renderer* _renderer) = 0;
 
   // Initial camera values. These will only be considered if function returns
   // true;

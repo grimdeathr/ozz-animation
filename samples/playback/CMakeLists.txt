@@ -12,6 +12,7 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy "${ozz_media_directory}/bin/pab_skeleton.ozz" "./media/skeleton.ozz"
   COMMAND ${CMAKE_COMMAND} -E copy "${ozz_media_directory}/bin/pab_crossarms.ozz" "./media/animation.ozz"
   VERBATIM)
+  
 
 add_executable(sample_playback
   sample_playback.cc
@@ -28,6 +29,9 @@ if(EMSCRIPTEN)
   # Resource files are embedded to the output file with emscripten
   set_target_properties(sample_playback
     PROPERTIES LINK_FLAGS "--embed-file media --embed-file README.md --memory-init-file 0")
+
+    # set_target_properties(sample_playback
+    # PROPERTIES LINK_FLAGS "-s EXPORTED_FUNCTIONS='['setSkelly', '_main']' -s EXPORTED_RUNTIME_METHODS='['ccall','cwrap']'")
 
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/sample_playback.html
